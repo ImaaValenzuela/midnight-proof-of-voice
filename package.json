@@ -1,0 +1,45 @@
+{
+  "name": "midnight-proof-of-voice",
+  "version": "0.0.0",
+  "private": true,
+  "description": "VoiceProof authorization protocol and development workspace",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0 <23"
+  },
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "typecheck": "npm run build --workspace @voiceproof/protocol && npm run typecheck --workspaces",
+    "test": "npm run build && npm run test --workspaces --if-present",
+    "check": "npm run typecheck && npm test && npm run test:contract && npm run test:verifier",
+    "dev": "npm run build && node --watch services/api/dist/server.js",
+    "contract:check": "node scripts/compile.mjs --skip-zk",
+    "contract:build": "node scripts/compile.mjs",
+    "test:contract": "npm run contract:check && node --test test/contracts/*.test.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "env:up": "docker compose up -d --wait",
+    "env:down": "docker compose down",
+    "env:logs": "docker compose logs --tail=100 -f",
+    "proof:up": "docker compose up -d --wait proof-server",
+    "setup:compact": "bash scripts/setup-compact.sh",
+    "dev:api": "npm run build && node services/api/dist/server.js",
+    "dev:verifier": ".tools/venv/bin/python -m uvicorn app:app --app-dir services/voice-verifier --host 127.0.0.1 --port 8000",
+    "test:verifier": ".tools/venv/bin/python -m unittest discover -s services/voice-verifier/tests -v",
+    "setup:python": "bash scripts/setup-python.sh",
+    "pack:sdk": "npm run build && npm pack --workspace @voiceproof/sdk --dry-run",
+    "setup:env": "node scripts/setup-env.mjs",
+    "data:up": "docker compose --env-file .env -f infra/compose.data.yml up -d --wait",
+    "data:down": "docker compose --env-file .env -f infra/compose.data.yml down",
+    "example:melodya": "npm run build && node examples/melodya/config.mjs",
+    "test:http": "npm run build && .tools/venv/bin/python scripts/test-http.py"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "@types/node": "22.20.1"
+  },
+  "workspaces": [
+    "packages/protocol",
+    "packages/sdk",
+    "services/api"
+  ]
+}

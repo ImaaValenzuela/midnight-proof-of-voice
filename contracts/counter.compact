@@ -1,0 +1,10 @@
+pragma language_version >= 0.23;
+
+import CompactStandardLibrary;
+
+// A toolchain smoke-test contract only; the counter is public.
+export ledger counter: Counter;
+
+export circuit increment(): [] {
+  counter.increment(1);
+}

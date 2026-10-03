@@ -1,0 +1,6 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "files.associations": { "*.compact": "compact" },
+  "files.exclude": { "contracts/managed": true },
+  "search.exclude": { "vendor": true, ".tools": true, "contracts/managed": true }
+}

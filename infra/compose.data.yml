@@ -1,0 +1,19 @@
+name: voiceproof-data
+services:
+  postgres:
+    image: postgres:17.11-bookworm
+    environment:
+      POSTGRES_DB: voiceproof
+      POSTGRES_USER: voiceproof
+      POSTGRES_PASSWORD: ${VOICEPROOF_DATABASE_PASSWORD:?Run npm run setup:env first}
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U voiceproof -d voiceproof"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+volumes:
+  postgres-data:

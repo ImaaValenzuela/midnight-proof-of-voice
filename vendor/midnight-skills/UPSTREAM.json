@@ -1,0 +1,7 @@
+{
+  "repository": "https://github.com/Kali-Decoder/Midnight-Skills",
+  "commit": "f1649caf7fbfedb79d6976976f8dbef4e19e43f8",
+  "downloadedAt": "2026-10-03",
+  "archiveSha256": "06276ffd49aa60288a9fad743eee268a8da3c2d992f568a5601189b3774e70e1",
+  "note": "Snapshot of .agents/skills, references, templates, README, LICENSE, and skills.json. Recheck versions against the official matrix."
+}

@@ -176,7 +176,7 @@ Do not publish names, email addresses, DIDs, or template IDs. DID is not a requi
 
 ## 9. Planned interfaces and organization
 
-Reference private API, not yet implemented:
+Target operation responsibilities (route names are provisional; current scaffold routes are listed in development.md):
 
 | Operation | Responsibility |
 | --- | --- |
@@ -204,7 +204,7 @@ docs/
   architecture.md
 ```
 
-This is a target structure, not implemented directories. API, issuer, and sponsor can initially coexist with separate permissions and keys. Add `apps/web` when building the user experience; the library will not depend on React.
+These directories now exist as development boundaries; the responsibilities in the diagram remain the implementation target. API, issuer, and sponsor can initially coexist with separate permissions and keys. Add `apps/web` when building the user experience; the library will not depend on React.
 
 ## 10. Validation and acceptance criteria
 
@@ -248,3 +248,14 @@ The first experiment is limited to credential + signed attestation + secret + ch
 - [DUST sponsorship](https://docs.midnight.network/guides/dust-sponsorship): separate holder authorization from funding.
 
 These references inform the design; they do not certify VoiceProof or imply affiliation with their authors.
+
+## Current implementation boundary
+
+The development scaffold now occupies the component directories above. The SDK
+constructs Midnight providers; protocol types describe draft application data.
+The API and private verifier expose working liveness endpoints and unavailable
+readiness/operation endpoints. The counter remains a toolchain fixture.
+
+No voice contract, biometric model, signed credential, database schema, object
+storage adapter, or generation provider is implemented. See [the roadmap](roadmap.md)
+for acceptance gates and [development setup](development.md) for runnable commands.

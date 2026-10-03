@@ -4,7 +4,7 @@
 
 The first use case is allowing someone to authorize a song generated with their voice in **Melodya**, without publishing audio, embeddings, or biometric scores on the ledger.
 
-> **Status: initial design.** This repository contains the README and proposed architecture. It does not yet provide an installable SDK, implemented biometric verification, deployed contracts, or production guarantees. API examples are illustrative.
+> **Status: executable development scaffold.** The repository includes an SDK workspace, protocol types, API and verifier boundaries, a Compact toolchain fixture, local infrastructure, and CI. Voice verification, voice authorization contracts, and music generation are not implemented. Authorization API examples below remain illustrative.
 
 ## What we want to prove
 
@@ -151,4 +151,38 @@ English is the project language for documentation, diagrams, code comments, mess
 - [Initial architecture](docs/architecture.md): components, flow, contract, data, risks, and open decisions.
 - [Apache-2.0 license](LICENSE): the repository's original license is preserved.
 
-Installation instructions are not available yet: this initial change publishes the product design only.
+## Start developing
+
+Requirements: Linux x86_64, Node.js 22.22.1, Python 3.11, and Docker with Compose
+for integration services. No wallet or biometric data is needed for unit checks.
+
+```bash
+npm ci --ignore-scripts
+npm run setup:compact
+npm run setup:python
+npm run setup:env
+npm run check
+npm run example:melodya
+```
+
+Start dependencies with `npm run env:up` (Midnight) and `npm run data:up`
+(PostgreSQL). In separate terminals, run `npm run dev:api` and
+`npm run dev:verifier`. Services expose `/health/live` (200) and `/health/ready`
+(503 until implemented). Sensitive operations deliberately return 501.
+
+```text
+packages/sdk/                 Midnight provider integration
+packages/protocol/            Draft application types
+services/api/                 Node API boundary, port 3000
+services/voice-verifier/      FastAPI verifier boundary, port 8000
+contracts/                    Counter fixture and voice contract requirements
+infra/                        Local PostgreSQL configuration
+examples/melodya/              Built SDK configuration example
+bench/                        Evaluation criteria
+vendor/midnight-skills/        Pinned skills and original notices
+```
+
+See [development setup](docs/development.md), [protocol decisions](docs/protocol.md),
+[threat model](docs/threat-model.md), [privacy model](docs/privacy-model.md), and
+[implementation milestones](docs/roadmap.md). Work stays on `main`; packages are
+private and are not published to npm.

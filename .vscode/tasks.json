@@ -1,0 +1,8 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    { "label": "SDK: check", "type": "npm", "script": "check", "group": "test", "problemMatcher": [] },
+    { "label": "Compact: check", "type": "npm", "script": "contract:check", "group": "build", "problemMatcher": [] },
+    { "label": "Midnight: doctor", "type": "npm", "script": "doctor", "problemMatcher": [] }
+  ]
+}

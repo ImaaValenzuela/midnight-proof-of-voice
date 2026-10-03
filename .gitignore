@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.tools/
+.env
+.env.*
+!.env.example
+contracts/managed/
+*.tgz
+*.log
+.private-state/
+coverage/
+
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/

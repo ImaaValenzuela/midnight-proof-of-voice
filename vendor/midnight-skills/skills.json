@@ -1,0 +1,883 @@
+{
+  "version": 2,
+  "site": {
+    "name": "MIDSKILLS",
+    "tagline": "Knowledge Skills for AI Agents Building on Midnight Network",
+    "description": "Open knowledge skills for AI agents building privacy-preserving apps on Midnight Network — Compact contracts, wallet integration, SDK guides, and runnable templates.",
+    "url": "https://midnight-skills.netlify.app",
+    "repository": "https://github.com/Kali-Decoder/Midnight-skills",
+    "license": "MIT",
+    "themeColor": "#070b10",
+    "ogImage": "/logos/pi.svg",
+    "keywords": [
+      "midnight",
+      "compact",
+      "web3",
+      "blockchain",
+      "confidential",
+      "privacy",
+      "dapp",
+      "zero-knowledge",
+      "ai-agents"
+    ],
+    "authors": [
+      {
+        "name": "Tusharpamnani",
+        "url": "https://github.com/tusharpamnani"
+      },
+      {
+        "name": "Kali-Decoder",
+        "url": "https://github.com/Kali-Decoder"
+      }
+    ]
+  },
+  "learningPaths": [
+    {
+      "id": "first-dapp",
+      "title": "Build your first Midnight DApp",
+      "steps": [
+        {
+          "skillId": "midnight-environment-setup",
+          "summary": "Install Compact, Docker, and proof server"
+        },
+        {
+          "skillId": "why-midnight",
+          "summary": "Privacy model and ZK basics"
+        },
+        {
+          "skillId": "zk-vs-fhe-vs-mpc",
+          "summary": "ZK vs FHE vs MPC tradeoffs"
+        },
+        {
+          "skillId": "react-wallet-connector",
+          "summary": "Connect a wallet in React"
+        },
+        {
+          "skillId": "compact",
+          "summary": "Write your first Compact contract"
+        },
+        {
+          "skillId": "hello-world",
+          "summary": "Full stack hello-world + tests"
+        },
+        {
+          "skillId": "1am-wallet",
+          "summary": "Deploy and call circuits via 1AM"
+        }
+      ]
+    },
+    {
+      "id": "defi",
+      "title": "DeFi primitives on Midnight",
+      "steps": [
+        {
+          "skillId": "token-transfers",
+          "summary": "Shielded and unshielded NIGHT flows"
+        },
+        {
+          "skillId": "example-payment-dapp",
+          "summary": "Privacy-preserving payment vault"
+        },
+        {
+          "skillId": "example-locker-dapp",
+          "summary": "Time-lock vault (vesting, LP locks)"
+        },
+        {
+          "skillId": "example-zk-loan-application",
+          "summary": "ZK credit scoring loan with Schnorr attestation"
+        }
+      ]
+    },
+    {
+      "id": "node-architecture",
+      "title": "Midnight node architecture",
+      "steps": [
+        {
+          "skillId": "midnight-consensus",
+          "summary": "AURA block production and GRANDPA finality"
+        },
+        {
+          "skillId": "midnight-cryptography",
+          "summary": "Node-level hashes and signature schemes"
+        },
+        {
+          "skillId": "midnight-onchain-logic",
+          "summary": "WASM runtime, FRAME pallets, pallet-midnight"
+        },
+        {
+          "skillId": "midnight-p2p-networking",
+          "summary": "libp2p discovery, transport, and gossip"
+        },
+        {
+          "skillId": "midnight-rpc",
+          "summary": "JSON-RPC for dApps, wallets, and explorers"
+        },
+        {
+          "skillId": "midnight-storage",
+          "summary": "ParityDB, Merkle trie, and state commitments"
+        },
+        {
+          "skillId": "midnight-transactions",
+          "summary": "Proof-based transaction lifecycle"
+        }
+      ]
+    }
+  ],
+  "skillLevels": [
+    {
+      "id": "beginner",
+      "title": "Beginner",
+      "subtitle": "Learn the privacy model, Compact basics, and wallet connect",
+      "color": "#7ec8e3",
+      "skills": [
+        {
+          "skillId": "midnight-environment-setup",
+          "summary": "Install Compact, Docker, proof server, and VS Code extension"
+        },
+        {
+          "skillId": "why-midnight",
+          "summary": "What Midnight is and how ZK privacy works"
+        },
+        {
+          "skillId": "compact",
+          "summary": "Write your first .compact contract"
+        },
+        {
+          "skillId": "example-private-party-dapp",
+          "summary": "Private party tutorial: privacy boundary + persistentCommit"
+        },
+        {
+          "skillId": "testing",
+          "summary": "Debug compiler errors and sync toolchain versions"
+        },
+        {
+          "skillId": "react-wallet-connector",
+          "summary": "Connect a wallet in React + Vite"
+        }
+      ]
+    },
+    {
+      "id": "intermediate",
+      "title": "Intermediate",
+      "subtitle": "Deploy contracts, call circuits, and ship a full dApp",
+      "color": "#ffd400",
+      "skills": [
+        {
+          "skillId": "hello-world",
+          "summary": "Hello-world dApp with vitest + testkit"
+        },
+        {
+          "skillId": "1am-wallet",
+          "summary": "1AM wallet, providers, dust-free deploy"
+        },
+        {
+          "skillId": "midnight-js",
+          "summary": "SDK wiring, wallets, contract calls"
+        },
+        {
+          "skillId": "example-counter",
+          "summary": "Complete counter dApp reference + CLI"
+        },
+        {
+          "skillId": "token-transfers",
+          "summary": "Shielded and unshielded NIGHT flows"
+        },
+        {
+          "skillId": "midnight-indexer",
+          "summary": "Query chain data and watch contract state"
+        },
+        {
+          "skillId": "midnight-rpc",
+          "summary": "JSON-RPC contract and ledger queries"
+        },
+        {
+          "skillId": "midnight-transactions",
+          "summary": "Proof-based transaction pool and execution"
+        }
+      ]
+    },
+    {
+      "id": "advanced",
+      "title": "Advanced",
+      "subtitle": "DeFi templates, multinet, NFTs, and privacy audits",
+      "color": "#b8e986",
+      "skills": [
+        {
+          "skillId": "example-payment-dapp",
+          "summary": "Privacy-preserving payment vault"
+        },
+        {
+          "skillId": "example-locker-dapp",
+          "summary": "Time-lock vault with runnable template"
+        },
+        {
+          "skillId": "example-zk-loan-application",
+          "summary": "Private credit scoring + attested ZK loan flow"
+        },
+        {
+          "skillId": "example-leaderboard-dapp",
+          "summary": "Privacy-preserving arcade leaderboard with ZK ownership proofs"
+        },
+        {
+          "skillId": "example-private-reserve-auction",
+          "summary": "Private reserve auction: hidden reserve, public bids, private bidder identities"
+        },
+        {
+          "skillId": "example-private-party-dapp",
+          "summary": "Private RSVP party with unshielded privacy boundary + 1AM frontend"
+        },
+        {
+          "skillId": "example-zk-loan-application",
+          "summary": "ZK credit scoring loan dApp with Schnorr attestation"
+        },
+        {
+          "skillId": "multinetwork",
+          "summary": "One codebase, all networks"
+        },
+        {
+          "skillId": "nft",
+          "summary": "Shielded + unshielded NFTs"
+        },
+        {
+          "skillId": "midnight-security",
+          "summary": "Privacy audit checklist and leak patterns"
+        },
+        {
+          "skillId": "midnight-consensus",
+          "summary": "AURA + GRANDPA consensus on Partnerchain"
+        },
+        {
+          "skillId": "midnight-onchain-logic",
+          "summary": "Runtime pallets and pallet-midnight"
+        }
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "id": "midnightskill",
+      "name": "Midnight Skills Router",
+      "path": ".agents/skills/midnightskill/SKILL.md",
+      "description": "Root router skill for Midnight Network. Use this to select the right sub-skill.",
+      "enabled": true,
+      "listInRouter": false,
+      "listInPackage": false,
+      "featured": false,
+      "category": "meta",
+      "tags": []
+    },
+    {
+      "id": "midnight-environment-setup",
+      "name": "Midnight Environment Setup",
+      "author": "Kali-Decoder",
+      "path": ".agents/skills/midnight-environment-setup/SKILL.md",
+      "description": "Automatically prepare a Midnight dev environment — Compact, PATH, Docker, proof server, and VS Code extension. Run before building or deploying.",
+      "enabled": true,
+      "featured": true,
+      "category": "foundation",
+      "taskHint": "Set up Compact, Docker, and proof server before building",
+      "routerBullets": [
+        "Detect OS, shell, Docker, VS Code, and Compact; install missing tooling automatically.",
+        "Configure PATH, update compiler, start proof server, and verify the full dev stack."
+      ],
+      "tags": [
+        "Setup",
+        "Compact",
+        "Docker",
+        "Proof Server"
+      ]
+    },
+    {
+      "id": "why-midnight",
+      "name": "Why Midnight",
+      "path": ".agents/skills/why-midnight/SKILL.md",
+      "description": "What Midnight is, why it exists, and how it works — public/private state, selective disclosure, and ZK proofs.",
+      "enabled": true,
+      "featured": true,
+      "category": "foundation",
+      "taskHint": "Understand Midnight's architecture, privacy model, and ZK approach",
+      "routerBullets": [
+        "Data protection blockchain with public/private state, selective disclosure, and zk-SNARKs.",
+        "Why it exists, how it works, and the privacy guarantees it provides."
+      ],
+      "tags": [
+        "Privacy",
+        "ZK-SNARKs",
+        "Architecture"
+      ]
+    },
+    {
+      "id": "zk-vs-fhe-vs-mpc",
+      "name": "ZK vs FHE vs MPC",
+      "author": "Kali-Decoder",
+      "path": ".agents/skills/zk-vs-fhe-vs-mpc/SKILL.md",
+      "description": "Compare ZK, FHE, and MPC for privacy-focused DApps — tradeoffs, platforms, and why Midnight uses zk-SNARKs.",
+      "enabled": true,
+      "featured": false,
+      "category": "foundation",
+      "taskHint": "Compare ZK vs FHE vs MPC for privacy-preserving computation",
+      "routerBullets": [
+        "Tradeoffs across zero-knowledge proofs, fully homomorphic encryption, and secure multi-party computation.",
+        "When each fits a privacy DApp, and why Midnight uses zk-SNARKs via Compact."
+      ],
+      "tags": [
+        "Privacy",
+        "ZK",
+        "FHE",
+        "MPC",
+        "Cryptography"
+      ]
+    },
+    {
+      "id": "1am-wallet",
+      "name": "1AM Wallet",
+      "path": ".agents/skills/1am-wallet/SKILL.md",
+      "description": "Integrate 1AM wallet for dust-free contract deployment and transaction flow on Midnight Network.",
+      "enabled": true,
+      "featured": true,
+      "category": "wallet",
+      "taskHint": "Integrate 1AM wallet for dust-free flow",
+      "routerBullets": [
+        "Detect, connect, and wire 1AM browser extension into frontend.",
+        "Provider setup, contract deployment, and dust-free transaction flow."
+      ],
+      "tags": [
+        "1AM",
+        "Wallet",
+        "Dust-free"
+      ]
+    },
+    {
+      "id": "react-wallet-connector",
+      "name": "React Wallet Connector",
+      "path": ".agents/skills/react-wallet-connector/SKILL.md",
+      "description": "Scaffold a React + Vite app with DApp Connector API wallet connection, connect/disconnect UI, and unshielded address display.",
+      "enabled": true,
+      "featured": true,
+      "category": "wallet",
+      "taskHint": "Build a React app with wallet connect/disconnect via DApp Connector API",
+      "routerBullets": [
+        "Scaffold a React + Vite app with DApp Connector API wallet connection.",
+        "`window.midnight` enumeration, connect/disconnect UI, unshielded address display."
+      ],
+      "tags": [
+        "React",
+        "DApp Connector",
+        "Wallet"
+      ]
+    },
+    {
+      "id": "dynamic-midnight-wallet",
+      "name": "Dynamic Midnight Wallet",
+      "author": "Kali-Decoder",
+      "path": ".agents/skills/dynamic-midnight-wallet/SKILL.md",
+      "description": "Scaffold React + Vite with Dynamic.xyz Midnight wallet — unshielded, shielded, and DUST surfaces.",
+      "enabled": false,
+      "featured": false,
+      "category": "wallet",
+      "taskHint": "Build a React app with Dynamic.xyz Midnight wallet (unshielded, shielded, DUST)",
+      "routerBullets": [
+        "Scaffold React + Vite with Dynamic.xyz Midnight connectors.",
+        "Unshielded, shielded, DUST surfaces, balances, send routing."
+      ],
+      "tags": [
+        "Dynamic.xyz",
+        "Wallet",
+        "DUST"
+      ]
+    },
+    {
+      "id": "compact",
+      "name": "Compact",
+      "path": ".agents/skills/compact/SKILL.md",
+      "description": "The Compact smart contract language for Midnight Network. TypeScript-like DSL that compiles to ZK circuits.",
+      "enabled": true,
+      "featured": true,
+      "category": "foundation",
+      "taskHint": "Write Compact smart contracts",
+      "routerBullets": [
+        "The four mandatory pieces of every contract, type system, circuits as constraints.",
+        "Witnesses, `disclose()`, ledger ADTs, standard library, and security patterns."
+      ],
+      "tags": [
+        "Compact",
+        "Circuits",
+        "Witnesses"
+      ]
+    },
+    {
+      "id": "testing",
+      "name": "Testing",
+      "path": ".agents/skills/testing/SKILL.md",
+      "description": "Debug Compact contracts and manage toolchain versions. Static vs dynamic errors, version sync, common traps.",
+      "enabled": true,
+      "featured": false,
+      "category": "foundation",
+      "taskHint": "Debug Compact contracts, read errors, manage versions",
+      "routerBullets": [
+        "Static vs dynamic errors, reading compiler messages, `--skip-zk` dev loop.",
+        "Version management across 6 components, common debugging patterns."
+      ],
+      "tags": [
+        "Testing",
+        "Compiler",
+        "Versions"
+      ]
+    },
+    {
+      "id": "multinetwork",
+      "name": "Multinetwork",
+      "path": ".agents/skills/multinetwork/SKILL.md",
+      "description": "Build a single dApp that deploys across all networks (localnet, preview, preprod, mainnet) from one codebase.",
+      "enabled": true,
+      "featured": false,
+      "category": "sdk",
+      "taskHint": "Build a single dApp targeting all networks from one codebase",
+      "routerBullets": [
+        "Unified provider builder, wallet abstraction, proof server routing.",
+        "Contract registry, deploy scripts, DUST flow per network."
+      ],
+      "tags": [
+        "Multinetwork",
+        "Deploy",
+        "DUST"
+      ]
+    },
+    {
+      "id": "midnight-js",
+      "name": "Midnight.js",
+      "path": ".agents/skills/midnight-js/SKILL.md",
+      "description": "TypeScript SDK — provider wiring, wallet SDK, contract deployment, DUST flow, testkit.",
+      "enabled": true,
+      "featured": false,
+      "category": "sdk",
+      "taskHint": "Wire up SDK providers, wallets, deploy/call contracts",
+      "routerBullets": [
+        "TypeScript SDK: provider wiring, wallet SDK (HDWallet, WalletFacade, Shielded/Unshielded/Dust).",
+        "Contract deployment, circuit calls, DUST generation, private state, testkit."
+      ],
+      "tags": [
+        "SDK",
+        "Wallet",
+        "Deploy"
+      ]
+    },
+    {
+      "id": "midnight-indexer",
+      "name": "Indexer",
+      "path": ".agents/skills/indexer/SKILL.md",
+      "description": "Query and subscribe to Midnight blockchain data via Indexer GraphQL API v4.",
+      "enabled": true,
+      "featured": false,
+      "category": "sdk",
+      "taskHint": "Query blockchain data, watch contract state, subscribe to events",
+      "routerBullets": [
+        "GraphQL queries and subscriptions, contract state reads, transaction lookups.",
+        "Real-time event watching, offset/null bug workaround, TypeScript helpers."
+      ],
+      "tags": [
+        "Indexer",
+        "GraphQL",
+        "Events"
+      ]
+    },
+    {
+      "id": "ankr-midnight",
+      "name": "Ankr Midnight RPC",
+      "author": "Kali-Decoder",
+      "path": ".agents/skills/ankr-midnight/SKILL.md",
+      "description": "Use Ankr as Midnight testnet/mainnet RPC — API key endpoints, JSON-RPC client, and midnight_* operations (not Ankr.js Advanced API).",
+      "enabled": true,
+      "featured": false,
+      "category": "sdk",
+      "taskHint": "Integrate Ankr RPC for Midnight testnet and mainnet",
+      "routerBullets": [
+        "Create Ankr project, copy HTTPS/WSS Midnight endpoints with API key.",
+        "JSON-RPC client for midnight_*, system_*, chain_*; wire into midnight-js node URL."
+      ],
+      "tags": [
+        "Ankr",
+        "RPC",
+        "JSON-RPC",
+        "Provider"
+      ]
+    },
+    {
+      "id": "midnight-security",
+      "name": "Security",
+      "path": ".agents/skills/security/SKILL.md",
+      "description": "Privacy audit checklist, data leak patterns, defensive Compact patterns.",
+      "enabled": true,
+      "featured": false,
+      "category": "domain",
+      "taskHint": "Privacy audit checklist, prevent data leaks, defensive Compact patterns",
+      "routerBullets": [
+        "Privacy audit checklist, data leak patterns, commitment/nullifier design.",
+        "Witness trust, front-running resistance, transaction semantics."
+      ],
+      "tags": [
+        "Security",
+        "Audit",
+        "Privacy"
+      ]
+    },
+    {
+      "id": "android-example-voting",
+      "name": "Android Example Voting",
+      "path": ".agents/skills/android-example-voting/SKILL.md",
+      "description": "Build a voting/poll dApp on Midnight Network using the Kuira Android SDK — Compact smart contract with create/cast/close circuits, passkey-derived identity, embedded wallet, Compose UI, reactive ledger reads via observeLedger(), and on-device ZK proving.",
+      "enabled": true,
+      "featured": false,
+      "category": "full-template",
+      "taskHint": "Build a voting/poll dApp on Midnight targeting Android",
+      "routerBullets": [
+        "Build a voting/poll dApp on Midnight using the Kuira Android SDK.",
+        "Compact smart contract, passkey-derived identity, embedded wallet, Compose UI, on-device ZK proving."
+      ],
+      "tags": [
+        "Android",
+        "Voting",
+        "Kuira"
+      ]
+    },
+    {
+      "id": "example-counter",
+      "name": "Example Counter",
+      "path": ".agents/skills/example-counter/SKILL.md",
+      "description": "Complete Midnight DApp reference — headless wallet, CLI, counter contract, DUST generation, deploy, interaction.",
+      "enabled": true,
+      "featured": false,
+      "category": "full-template",
+      "taskHint": "Complete DApp reference: wallet, deploy, interact (use as template)",
+      "routerBullets": [
+        "Complete DApp reference: headless wallet, CLI, counter contract.",
+        "DUST generation, deploy, interaction, standalone mode."
+      ],
+      "tags": [
+        "Counter",
+        "CLI",
+        "Headless"
+      ]
+    },
+    {
+      "id": "hello-world",
+      "name": "Example Hello World",
+      "path": ".agents/skills/example-hello-world/SKILL.md",
+      "description": "Build a complete Midnight Network hello-world DApp from scratch with Compact, vitest, and FluentWalletBuilder.",
+      "enabled": true,
+      "featured": false,
+      "category": "full-template",
+      "taskHint": "Build a complete Midnight Network hello-world DApp from scratch using Compact smart contract, headless Node.js tests with vitest, and testkit-js FluentWalletBuilder.",
+      "routerBullets": [
+        "Build a complete Midnight Network hello-world DApp from scratch using Compact smart contract, headless Node.js tests with vitest, and testkit-js FluentWalletBuilder."
+      ],
+      "tags": [
+        "Hello world",
+        "Vitest",
+        "Testkit"
+      ]
+    },
+    {
+      "id": "example-payment-dapp",
+      "name": "Example Payment Dapp",
+      "path": ".agents/skills/example-payment-dapp/SKILL.md",
+      "description": "Privacy-preserving payment vault: deposit/withdraw tNIGHT via Compact + 1AM wallet.",
+      "enabled": true,
+      "featured": false,
+      "category": "full-template",
+      "taskHint": "Build a privacy-preserving payment vault with 1AM wallet",
+      "routerBullets": [
+        "Build a privacy-preserving payment vault: users deposit/withdraw tNIGHT through a Compact smart contract with zero gas fees via the 1AM wallet."
+      ],
+      "tags": [
+        "Payment vault",
+        "1AM",
+        "tNIGHT"
+      ]
+    },
+    {
+      "id": "example-locker-dapp",
+      "name": "Example Locker Dapp",
+      "path": ".agents/skills/example-locker-dapp/SKILL.md",
+      "description": "Time-lock vault dApp: lock unshielded NIGHT until a Unix deadline; beneficiary releases via blockTimeGte.",
+      "enabled": true,
+      "featured": true,
+      "category": "full-template",
+      "taskHint": "Build a time-lock vault dApp on Midnight",
+      "routerBullets": [
+        "Time-lock vault: lock unshielded NIGHT until a Unix deadline; beneficiary releases via `blockTimeGte` and witness auth."
+      ],
+      "templatePath": "templates/locker-dapp",
+      "tags": [
+        "Time-lock",
+        "Vault",
+        "NIGHT"
+      ]
+    },
+    {
+      "id": "example-leaderboard-dapp",
+      "name": "Example Leaderboard Dapp",
+      "author": "Kali-Decoder",
+      "path": ".agents/skills/example-leaderboard-dapp/SKILL.md",
+      "description": "Privacy-preserving arcade leaderboard: submit scores with anonymous/public/custom names and prove ownership via ZK.",
+      "enabled": true,
+      "featured": true,
+      "category": "full-template",
+      "taskHint": "Build a privacy-preserving leaderboard DApp on Midnight",
+      "routerBullets": [
+        "Arcade leaderboard with privacy modes, `persistentHash` owner commitments, and `verifyOwnership` ZK proofs.",
+        "Next.js + 1AM wallet template with indexer reads and low-level deploy/call."
+      ],
+      "templatePath": "templates/leaderboard-dapp",
+      "tags": [
+        "Leaderboard",
+        "ZK proofs",
+        "Arcade"
+      ]
+    },
+    {
+      "id": "example-private-party-dapp",
+      "name": "Example Private Party Dapp",
+      "author": "Kali-Decoder",
+      "path": ".agents/skills/example-private-party-dapp/SKILL.md",
+      "description": "Private party RSVP dApp: persistentCommit guest list, DApp-specific public keys, unshielded NIGHT privacy boundary, Next.js + 1AM wallet.",
+      "enabled": true,
+      "featured": true,
+      "category": "full-template",
+      "taskHint": "Build a private party RSVP dApp with privacy boundary on Midnight",
+      "routerBullets": [
+        "Private RSVP with `persistentCommit` and DApp-specific public keys — no witnesses.",
+        "Unshielded NIGHT check-in crosses the privacy boundary; Next.js + 1AM frontend template.",
+        "Official vitest devnet test harness in `example-private-party` repo."
+      ],
+      "templatePath": "templates/private-party-dapp",
+      "tags": [
+        "Private party",
+        "RSVP",
+        "Privacy boundary",
+        "persistentCommit"
+      ]
+    },
+    {
+      "id": "example-private-reserve-auction",
+      "name": "Example Private Reserve Auction",
+      "author": "tusharpamnani",
+      "path": ".agents/skills/example-private-reserve-auction/SKILL.md",
+      "description": "Private reserve auction dApp: hidden reserve price, public bids, private bidder identities, persistentCommit, Map, Counter, receiveUnshielded/sendUnshielded privacy boundary, Next.js + 1AM wallet.",
+      "enabled": true,
+      "featured": true,
+      "category": "full-template",
+      "taskHint": "Build a private reserve auction dApp with hidden reserve price and private bidders",
+      "routerBullets": [
+        "Hidden reserve price via persistentCommit, public bids with private bidder identities.",
+        "Map/Counter tracking, auction auto-close, privacy boundary on claim via unshielded payment.",
+        "Next.js + 1AM wallet frontend with seller/bidder role cards and indexer polling."
+      ],
+      "tags": [
+        "Auction",
+        "Private auction",
+        "Reserve price",
+        "persistentCommit"
+      ]
+    },
+    {
+      "id": "example-zk-loan-application",
+      "name": "Example ZK Loan Application",
+      "author": "Kali-Decoder",
+      "path": ".agents/skills/example-zk-loan-application/SKILL.md",
+      "description": "Zero-knowledge loan dApp: privately evaluate credit data with Schnorr attestation, record only loan outcomes on-chain.",
+      "enabled": true,
+      "featured": true,
+      "category": "full-template",
+      "taskHint": "Build a ZK loan application with attestation on Midnight",
+      "routerBullets": [
+        "Private credit scoring with Schnorr attestation — score, income, and tenure never touch the ledger.",
+        "Monorepo: Compact contract + attestation API + CLI; optional Next.js + 1AM frontend (leaderboard-dapp pattern)."
+      ],
+      "tags": [
+        "ZK Loan",
+        "Attestation",
+        "Schnorr",
+        "DeFi"
+      ]
+    },
+    {
+      "id": "nft",
+      "name": "NFT",
+      "path": ".agents/skills/nft/SKILL.md",
+      "description": "Build shielded and unshielded NFTs on Midnight using OpenZeppelin Compact contracts.",
+      "enabled": true,
+      "featured": false,
+      "category": "domain",
+      "taskHint": "Build NFTs (shielded + unshielded) with OpenZeppelin",
+      "routerBullets": [
+        "Build shielded and unshielded NFTs on Midnight.",
+        "OpenZeppelin NonFungibleToken, mint, transfer, metadata, privacy patterns."
+      ],
+      "tags": [
+        "NFT",
+        "OpenZeppelin",
+        "Shielded"
+      ]
+    },
+    {
+      "id": "token-transfers",
+      "name": "Token Transfers",
+      "path": ".agents/skills/token-transfers/SKILL.md",
+      "description": "Shielded and unshielded token transfers, balance queries, multi-party flows on Midnight.",
+      "enabled": true,
+      "featured": false,
+      "category": "domain",
+      "taskHint": "Token transfers, balance flows, multi-party txs",
+      "routerBullets": [
+        "Shielded and unshielded token transfers.",
+        "Balance queries, multi-party flows, transaction semantics."
+      ],
+      "tags": [
+        "Tokens",
+        "Transfers",
+        "Shielded"
+      ]
+    },
+    {
+      "id": "midnight-consensus",
+      "name": "Midnight Consensus",
+      "path": ".agents/skills/midnight-consensus/SKILL.md",
+      "description": "AURA block production, GRANDPA finality, and Cardano Partnerchain validator selection with SPO stake delegation.",
+      "enabled": true,
+      "featured": false,
+      "category": "foundation",
+      "taskHint": "Understand Midnight consensus — AURA, GRANDPA, and Partnerchain validators",
+      "routerBullets": [
+        "Modified Substrate consensus: AURA for block production, GRANDPA for finality.",
+        "Custom validator set with Cardano SPO delegation and optional permissioned validators."
+      ],
+      "tags": [
+        "Consensus",
+        "AURA",
+        "GRANDPA",
+        "Partnerchain"
+      ]
+    },
+    {
+      "id": "midnight-cryptography",
+      "name": "Midnight Cryptography",
+      "path": ".agents/skills/midnight-cryptography/SKILL.md",
+      "description": "Node cryptographic primitives — Blake2-256, sr25519, ECDSA, Ed25519, and twoxhash storage keys.",
+      "enabled": true,
+      "featured": false,
+      "category": "foundation",
+      "taskHint": "Explain Midnight node cryptography — hashes and signature schemes",
+      "routerBullets": [
+        "Blake2-256 for block hashes; twoxhash for trie storage keys.",
+        "sr25519 (AURA), ECDSA (Partnerchain), Ed25519 (GRANDPA + libp2p)."
+      ],
+      "tags": [
+        "Cryptography",
+        "Blake2",
+        "Signatures",
+        "Node"
+      ]
+    },
+    {
+      "id": "midnight-onchain-logic",
+      "name": "Onchain Logic and State",
+      "path": ".agents/skills/midnight-onchain-logic/SKILL.md",
+      "description": "WASM runtime, FRAME pallets, pallet-midnight ledger state machine, and proof-based state transitions.",
+      "enabled": true,
+      "featured": false,
+      "category": "foundation",
+      "taskHint": "Explain Midnight on-chain logic — runtime, pallets, and pallet-midnight",
+      "routerBullets": [
+        "Polkadot SDK WASM runtime with FRAME pallets including pallet-midnight.",
+        "Proof verification, ZSwap and contract ops, Patricia-Merkle state commitments."
+      ],
+      "tags": [
+        "Runtime",
+        "FRAME",
+        "pallet-midnight",
+        "WASM"
+      ]
+    },
+    {
+      "id": "midnight-p2p-networking",
+      "name": "P2P Networking",
+      "path": ".agents/skills/midnight-p2p-networking/SKILL.md",
+      "description": "libp2p peer discovery, TCP/WebSocket transport, Noise encryption, Yamux multiplexing, and gossip protocols.",
+      "enabled": true,
+      "featured": false,
+      "category": "foundation",
+      "taskHint": "Configure or debug Midnight P2P networking and peer discovery",
+      "routerBullets": [
+        "Bootstrap, mDNS, and Kademlia DHT discovery strategies.",
+        "Noise + Yamux upgrades; Ping, Request-Response, and Notification substreams."
+      ],
+      "tags": [
+        "P2P",
+        "libp2p",
+        "Networking",
+        "Discovery"
+      ]
+    },
+    {
+      "id": "midnight-rpc",
+      "name": "RPC Interface",
+      "path": ".agents/skills/midnight-rpc/SKILL.md",
+      "description": "JSON-RPC methods for contract state, ZSwap chain state, ledger version, Polkadot SDK defaults, and Partnerchain RPCs.",
+      "enabled": true,
+      "featured": false,
+      "category": "foundation",
+      "taskHint": "Query Midnight node RPC — contract state, ZSwap, and ledger methods",
+      "routerBullets": [
+        "Custom midnight_* JSON-RPC methods for contract and ledger state.",
+        "Polkadot SDK defaults, Partnerchain RPCs, and validator RPC security."
+      ],
+      "tags": [
+        "RPC",
+        "JSON-RPC",
+        "Node",
+        "API"
+      ]
+    },
+    {
+      "id": "midnight-storage",
+      "name": "Storage",
+      "path": ".agents/skills/midnight-storage/SKILL.md",
+      "description": "ParityDB backend, Patricia-Merkle trie state commitments, and twoxhash storage key generation.",
+      "enabled": true,
+      "featured": false,
+      "category": "foundation",
+      "taskHint": "Explain Midnight on-chain storage — ParityDB, trie, and state roots",
+      "routerBullets": [
+        "ParityDB key-value store with Patricia-Merkle trie state commitments.",
+        "twoxhash for fast storage keys; inclusion proofs for on-chain data."
+      ],
+      "tags": [
+        "Storage",
+        "ParityDB",
+        "Merkle trie",
+        "State"
+      ]
+    },
+    {
+      "id": "midnight-transactions",
+      "name": "Transactions",
+      "path": ".agents/skills/midnight-transactions/SKILL.md",
+      "description": "Proof-based unsigned ledger transactions, pool validation, runtime verification, and state commit lifecycle.",
+      "enabled": true,
+      "featured": false,
+      "category": "foundation",
+      "taskHint": "Explain Midnight transaction lifecycle — proofs, pool, and execution",
+      "routerBullets": [
+        "Unsigned proof-embedded transactions from the Midnight Ledger.",
+        "Pool well-formedness → runtime proof verification → state commit."
+      ],
+      "tags": [
+        "Transactions",
+        "Proofs",
+        "ZSwap",
+        "Lifecycle"
+      ]
+    }
+  ]
+}
