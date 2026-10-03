@@ -1,71 +1,71 @@
 # VoiceProof · Proof of Voice Authorization
 
-**Un SDK para vincular la verificación de una voz con el consentimiento para un uso concreto y una autorización verificable en Midnight.**
+**An SDK that links voice verification to consent for a specific use and a verifiable authorization on Midnight.**
 
-Primer caso de uso: permitir que una persona autorice la generación de una canción con su voz en **Melodya**, sin publicar audio, embeddings ni scores biométricos en el ledger.
+The first use case is allowing someone to authorize a song generated with their voice in **Melodya**, without publishing audio, embeddings, or biometric scores on the ledger.
 
-> **Estado: diseño inicial.** Este repositorio contiene el README y la arquitectura propuesta. Todavía no ofrece un SDK instalable, verificación biométrica implementada, contratos desplegados ni garantías de producción. Los ejemplos de API son ilustrativos.
+> **Status: initial design.** This repository contains the README and proposed architecture. It does not yet provide an installable SDK, implemented biometric verification, deployed contracts, or production guarantees. API examples are illustrative.
 
-## Qué queremos demostrar
+## What we want to prove
 
-El claim del protocolo será:
+The protocol's claim will be:
 
-> Quien controla el secreto asociado a una credencial vigente autorizó un uso específico, y un verificador admitido atestiguó que una muestra superó la política de verificación de voz para ese mismo challenge.
+> The party controlling the secret associated with a valid credential authorized a specific use, and an approved verifier attested that a sample passed the voice verification policy for that same challenge.
 
-La prueba combina dos evidencias diferentes:
+The proof combines two different kinds of evidence:
 
-1. **Atestación biométrica:** un servicio externo verifica speaker, frase dinámica y señales de spoofing/liveness; firma el resultado y su contexto.
-2. **Autorización ZK:** el contrato verifica la firma, la credencial, el conocimiento del secreto del holder, el consentimiento, la vigencia y la protección contra replay.
+1. **Biometric attestation:** an external service checks the speaker, a dynamic phrase, and spoofing/liveness signals, then signs the result and its context.
+2. **ZK authorization:** the contract checks the signature, credential, knowledge of the holder's secret, consent, validity, and replay protection.
 
-Midnight verificará las condiciones criptográficas del protocolo. **No ejecutará el modelo de voz ni demostrará por sí mismo que su decisión biométrica es correcta.** La confianza en el verificador, sus modelos y su política sigue siendo explícita.
+Midnight will verify the protocol's cryptographic conditions. **It will not run the voice model or independently prove that its biometric decision is correct.** Trust in the verifier, its models, and its policy remains explicit.
 
-El repositorio se llama `midnight-proof-of-voice`; el producto se define como **Proof of Voice Authorization**. No afirmamos propiedad jurídica de una voz, identidad civil ni detección infalible de deepfakes.
+The repository is named `midnight-proof-of-voice`; the product is defined as **Proof of Voice Authorization**. We do not claim legal ownership of a voice, civil identity, or infallible deepfake detection.
 
-## La experiencia que buscamos
+## The intended experience
 
-1. La persona registra tres muestras de voz y recibe una credencial vinculada a un secreto bajo su control.
-2. Melodya presenta la solicitud concreta: qué se generará, para qué, con qué permisos y para qué aplicación.
-3. La persona acepta y responde un challenge de voz impredecible y de corta duración.
-4. El verificador comprueba la frase, el speaker y las señales de ataque; si acepta, firma una atestación.
-5. El SDK prepara una prueba que vincula esa atestación con el holder, la credencial y el consentimiento.
-6. Midnight acepta la autorización y registra su consumo para impedir su reutilización.
-7. El backend comprueba la autorización confirmada y reserva una única tarea de generación.
-8. La canción queda asociada a un receipt verificable, sin publicar su biometría.
+1. A person enrolls three voice samples and receives a credential bound to a secret they control.
+2. Melodya presents the specific request: what will be generated, for which purpose, under which permissions, and for which application.
+3. The person consents and responds to an unpredictable, short-lived voice challenge.
+4. The verifier checks the phrase, speaker, and attack signals; if accepted, it signs an attestation.
+5. The SDK prepares a proof binding that attestation to the holder, credential, and consent.
+6. Midnight accepts the authorization and records its consumption to prevent reuse.
+7. The backend checks the confirmed authorization and reserves a single generation job.
+8. The song is associated with a verifiable receipt without publishing its biometric inputs.
 
 ```mermaid
 flowchart TD
-    A[Melodya: solicitud y consentimiento] --> B[Challenge dinámico de voz]
-    B --> C[Verificador privado: frase, speaker y anti-spoofing]
-    C --> D[Atestación firmada]
-    D --> E[SDK: holder, credencial y prueba ZK]
-    E --> F[Midnight: autorización y nullifier]
-    F --> G[Backend: comprobar confirmación y reservar uso]
-    G --> H[Generación musical]
-    H --> I[Receipt vinculado al resultado]
+    A[Melodya: request and consent] --> B[Dynamic voice challenge]
+    B --> C[Private verifier: phrase, speaker, and anti-spoofing]
+    C --> D[Signed attestation]
+    D --> E[SDK: holder, credential, and ZK proof]
+    E --> F[Midnight: authorization and nullifier]
+    F --> G[Backend: check confirmation and reserve use]
+    G --> H[Music generation]
+    H --> I[Receipt linked to the result]
 ```
 
-Un rechazo biométrico, una credencial revocada, una autorización vencida o un uso repetido deben impedir el acceso a la generación.
+A biometric rejection, revoked credential, expired authorization, or repeated use must prevent access to generation.
 
-## Alcance del primer MVP
+## First MVP scope
 
-| Área | Objetivo v0.1 |
+| Area | v0.1 objective |
 | --- | --- |
-| Enrollment | Tres muestras, controles de calidad y template cifrado |
-| Verificación | Speaker verification, frase dinámica y evaluación anti-spoofing |
-| Credencial | Formato propio, vinculado al holder y a un commitment del template |
-| Consentimiento | Una solicitud; propósito, audiencia y permisos explícitos |
-| Midnight | Verificar atestación, holder, vigencia, revocación y nullifier |
-| Integración | Backend que exige autorización confirmada antes de generar |
-| Receipt | Referencia verificable al uso autorizado y vínculo privado al resultado |
-| UX | Sponsorship de DUST, separando al pagador de quien autoriza |
+| Enrollment | Three samples, quality checks, and an encrypted template |
+| Verification | Speaker verification, a dynamic phrase, and anti-spoofing evaluation |
+| Credential | A dedicated format bound to the holder and a template commitment |
+| Consent | One request, with an explicit purpose, audience, and permissions |
+| Midnight | Check attestation, holder, validity, revocation, and nullifier |
+| Integration | A backend that requires confirmed authorization before generation |
+| Receipt | A verifiable reference to the authorized use and a private link to the result |
+| UX | DUST sponsorship, separating the payer from the authorizing party |
 
-Se evaluarán ECAPA-TDNN y TitaNet; el modelo y sus umbrales se decidirán con mediciones propias. Una frase dinámica reduce ciertos ataques de reproducción, pero no sustituye la evaluación frente a síntesis en tiempo real.
+We will evaluate ECAPA-TDNN and TitaNet; model selection and thresholds will depend on our own measurements. A dynamic phrase reduces certain playback attacks but does not replace evaluation against real-time synthesis.
 
-Quedan fuera del primer MVP: identidad civil, prueba de titularidad legal, compatibilidad DID/VC obligatoria, entrenamiento de modelos de voz, SDK nativo iOS/Android y despliegue Mainnet. Tampoco habrá autorización abierta para todas las canciones futuras.
+The first MVP excludes civil identity, proof of legal ownership, mandatory DID/VC compatibility, voice model training, native iOS/Android SDKs, and Mainnet deployment. It will not offer blanket authorization for all future songs.
 
-## API que queremos ofrecer
+## The API we want to offer
 
-**Propuesta de ergonomía, no código disponible actualmente:**
+**Proposed developer experience, not currently available code:**
 
 ```ts
 const authorization = await voiceproof.authorize({
@@ -77,76 +77,78 @@ const authorization = await voiceproof.authorize({
   permissions: { commercialUse: false, training: false },
 });
 
-// El backend verifica esta referencia por su cuenta.
-// Nunca confía en un booleano verified enviado por el cliente.
+// The backend independently verifies this reference.
+// It never trusts a client-supplied verified boolean.
 await melodya.requestGeneration({
   requestId,
   authorizationRef: authorization.reference,
 });
 ```
 
-El SDK coordinará el challenge, la captura mediante la aplicación, el consentimiento y la prueba. La wallet, el transporte biométrico y el proveedor de proving tendrán responsabilidades explícitas. Los secretos no se entregarán al sponsor.
+The SDK will coordinate the challenge, capture through the application, consent, and proof. The wallet, biometric transport, and proving provider will have explicit responsibilities. Secrets will not be shared with the sponsor.
 
-Antes de generar no existe la canción: `generationRequestCommitment` vinculará una **solicitud inmutable de generación**, no un supuesto hash del audio futuro. El resultado se enlazará al receipt después de producirse.
+The song does not exist before generation: `generationRequestCommitment` will bind an **immutable generation request**, not an assumed hash of future audio. The result will be linked to the receipt after generation.
 
-## Frontera de privacidad
+## Privacy boundary
 
-| Información | Tratamiento previsto |
+| Information | Intended handling |
 | --- | --- |
-| Audio de enrollment/challenge | Procesamiento privado y retención mínima definida |
-| Embedding/template, score y señales anti-spoofing | Privados; nunca ledger ni logs públicos |
-| Identidad de cuenta y template ID interno | Base privada de la aplicación |
-| Secreto del holder | Dispositivo o entorno de proving expresamente confiado por el usuario |
-| Commitments, revocación y nullifiers | Estado público mínimo del protocolo |
-| Consentimiento y solicitud detallados | Privados; el ledger recibe sus commitments |
-| Receipt | Referencia pública de autorización y metadatos privados del resultado |
+| Enrollment/challenge audio | Private processing with a defined minimum retention period |
+| Embedding/template, score, and anti-spoofing signals | Private; never on the ledger or in public logs |
+| Account identity and internal template ID | The application's private database |
+| Holder secret | The device or a proving environment explicitly trusted by the user |
+| Commitments, revocation, and nullifiers | Minimal public protocol state |
+| Detailed consent and request | Private; the ledger receives their commitments |
+| Receipt | A public authorization reference and private result metadata |
 
-**Privado frente al ledger no significa invisible para todos.** En el MVP, el servicio biométrico verá las muestras que procesa. Un prover remoto puede recibir witnesses. La arquitectura limita y documenta esas fronteras; no promete procesamiento íntegramente en el dispositivo.
+**Private from the ledger does not mean invisible to everyone.** In the MVP, the biometric service will see the samples it processes. A remote prover may receive witnesses. The architecture limits and documents these boundaries; it does not promise entirely on-device processing.
 
-Los commitments tampoco implican anonimato: el esquema inicial de revocación puede vincular usos de una misma credencial. Esta limitación se detalla en la [arquitectura](docs/architecture.md).
+Commitments do not imply anonymity either: the initial revocation design may link uses of the same credential. The [architecture](docs/architecture.md) documents this limitation.
 
-## Inspiración: un SDK pequeño y verificable
+## Inspiration: a small, verifiable SDK
 
-Tomamos como referencia [midnight-prover-ios](https://github.com/sleepydogo/midnight-prover-ios), que separa su núcleo de proving de los proveedores de material criptográfico y expone una API nativa acotada.
+Our reference is [midnight-prover-ios](https://github.com/sleepydogo/midnight-prover-ios), which separates its proving core from cryptographic material providers and exposes a focused native API.
 
-Aplicaremos esa disciplina a VoiceProof: separar protocolo e integración, verificar artefactos, distinguir prueba de confirmación on-chain, documentar límites y probar el paquete desde una aplicación consumidora. **No es un fork ni una integración iOS anunciada**; sus benchmarks y versiones no son garantías para nuestros circuitos.
+We will apply that discipline to VoiceProof: separate protocol and integration, verify artifacts, distinguish proofs from on-chain confirmation, document limits, and test the package from a consuming application. **This is neither a fork nor an announced iOS integration**; its benchmarks and versions are not guarantees for our circuits.
 
-La arquitectura también se apoya en [Midnight-Skills](https://github.com/Kali-Decoder/Midnight-Skills), contrastando sus ejemplos con las APIs y la [matriz oficial de compatibilidad](https://docs.midnight.network/relnotes/support-matrix).
+The architecture also draws on [Midnight-Skills](https://github.com/Kali-Decoder/Midnight-Skills), checking its examples against the APIs and the [official compatibility matrix](https://docs.midnight.network/relnotes/support-matrix).
 
-## Primer hito de éxito
+## First success milestone
 
-En **Preview**, una credencial de prueba y una atestación firmada permiten demostrar:
+On **Preview**, a test credential and a signed attestation must establish:
 
 ```text
-conocimiento del secreto del holder
-+ credencial vigente y no revocada
-+ atestación de un verificador admitido
-+ challenge vigente y vinculado a la solicitud
-+ consentimiento para ese uso
-+ nullifier no utilizado
-→ autorización confirmada
+knowledge of the holder's secret
++ a valid, non-revoked credential
++ an attestation from an approved verifier
++ a valid challenge bound to the request
++ consent for that use
++ an unused nullifier
+→ confirmed authorization
 ```
 
-Los fixtures iniciales validarán la criptografía, no la calidad biométrica. El hito integrado se considerará cumplido cuando:
+Initial fixtures validate cryptography, not biometric quality. The integrated milestone is complete when:
 
-- El titular de prueba complete el flujo y obtenga una canción con su receipt.
-- Un impostor o una muestra rechazada no produzcan una autorización válida.
-- Una autorización para la solicitud A no habilite B, otra audiencia ni otro propósito.
-- Dos peticiones concurrentes con la misma autorización creen como máximo una tarea de generación.
-- Revocar una credencial impida nuevas autorizaciones según la política documentada.
+- The test holder completes the flow and receives a song with its receipt.
+- An impostor or rejected sample cannot produce a valid authorization.
+- Authorization for request A cannot enable request B, another audience, or another purpose.
+- Two concurrent requests using the same authorization create at most one generation job.
+- Revoking a credential prevents new authorizations under the documented policy.
 
-## Camino de implementación
+## Implementation path
 
-1. **Protocolo y viabilidad:** fijar encoding, firmas verificables en Compact, commitments, reloj, revocación y replay; medir el circuito mínimo.
-2. **Biometría privada:** enrollment, challenge y evaluación calibrada del verificador, con retención y versiones de modelo definidas.
-3. **SDK y Preview:** integrar las dos rutas, sponsorship, confirmación y consumo único en el backend.
-4. **Piloto y endurecimiento:** evaluar ataques, falsos aceptados/rechazados, latencias, recuperación y operación; pasar por Preprod antes de considerar Mainnet.
+1. **Protocol and feasibility:** define encoding, signatures verifiable in Compact, commitments, time, revocation, and replay protection; measure the smallest circuit.
+2. **Private biometrics:** implement enrollment, challenges, and calibrated verifier evaluation with defined retention and model versions.
+3. **SDK and Preview:** integrate both paths, sponsorship, confirmation, and single consumption in the backend.
+4. **Pilot and hardening:** evaluate attacks, false acceptances/rejections, latency, recovery, and operations; pass through Preprod before considering Mainnet.
 
-El avance depende de criterios de aceptación. No hay una fecha de producción ni una garantía de seguridad derivada de una demo exitosa.
+Progress depends on acceptance criteria. A successful demo does not establish a production date or a security guarantee.
 
-## Documentación y licencia
+## Documentation and license
 
-- [Arquitectura inicial](docs/architecture.md): componentes, flujo, contrato, datos, riesgos y decisiones pendientes.
-- [Licencia Apache-2.0](LICENSE): se conserva la licencia inicial del repositorio.
+English is the project language for documentation, diagrams, code comments, messages, and contributions.
 
-No hay instrucciones de instalación aún: este primer cambio publica exclusivamente el diseño del producto.
+- [Initial architecture](docs/architecture.md): components, flow, contract, data, risks, and open decisions.
+- [Apache-2.0 license](LICENSE): the repository's original license is preserved.
+
+Installation instructions are not available yet: this initial change publishes the product design only.

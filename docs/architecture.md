@@ -1,250 +1,250 @@
-# Arquitectura inicial · Proof of Voice Authorization
+# Initial Architecture · Proof of Voice Authorization
 
-**Estado:** propuesta v0.1, sin implementación del protocolo ni despliegue.
+**Status:** v0.1 proposal, without a protocol implementation or deployment.
 
-**Consumidor inicial:** Melodya. **Superficie inicial:** SDK TypeScript y servicios de referencia.
+**First consumer:** Melodya. **Initial interface:** a TypeScript SDK and reference services.
 
-**Entornos:** simulación/local → Preview → Preprod → Mainnet, con criterios de salida por etapa.
+**Environments:** simulation/local → Preview → Preprod → Mainnet, with exit criteria at each stage.
 
-## 1. Claim y límites de confianza
+## 1. Claim and trust boundaries
 
-El sistema pretende demostrar que quien conoce el secreto de una credencial vigente autorizó una solicitud y presentó una atestación válida de verificación de voz para ese contexto.
+The system aims to prove that someone who knows the secret of a valid credential authorized a request and presented a valid voice verification attestation for that context.
 
-Enrollment demuestra continuidad respecto de un template registrado; no certifica identidad civil, origen legítimo de las muestras ni propiedad jurídica de una voz.
+Enrollment establishes continuity with a registered template. It does not certify civil identity, the legitimate origin of samples, or legal ownership of a voice.
 
-| Actor | Responsabilidad y confianza necesaria |
+| Actor | Responsibility and required trust |
 | --- | --- |
-| Holder | Controlar su secreto y aprobar el consentimiento que firma/prueba |
-| Aplicación | Mostrar la solicitud real y capturar audio sin sustituir el contexto aprobado |
-| Emisor | Emitir/revocar credenciales y vincular correctamente template y holder |
-| Verificador | Evaluar audio con una política versionada y firmar sólo decisiones aceptadas |
-| Prover | Ejecutar el circuito; conoce los witnesses que recibe, aunque no se publiquen |
-| Sponsor | Pagar DUST y transmitir; no adquiere autoridad sobre el holder |
-| Contrato | Aplicar las restricciones criptográficas y actualizar el estado |
-| Backend musical | Verificar contexto/confirmación y hacer cumplir consumo único y permisos |
+| Holder | Control their secret and approve the consent they sign/prove |
+| Application | Display the actual request and capture audio without replacing the approved context |
+| Issuer | Issue/revoke credentials and correctly bind template and holder |
+| Verifier | Evaluate audio under a versioned policy and sign only accepted decisions |
+| Prover | Execute the circuit; it knows the witnesses it receives even when they are not published |
+| Sponsor | Pay DUST and submit; it gains no authority over the holder |
+| Contract | Enforce cryptographic constraints and update state |
+| Music backend | Verify context/confirmation and enforce single consumption and permissions |
 
-El circuito verificará una firma sobre una decisión biométrica. No ejecutará ML. Un emisor o verificador comprometido puede emitir evidencia falsa dentro de sus atribuciones; ZK no corrige esa fuente de confianza. Se requieren control de claves, rotación, pausa y revocación.
+The circuit will verify a signature over a biometric decision. It will not run ML. A compromised issuer or verifier can issue false evidence within its authority; ZK does not repair that trust assumption. Key controls, rotation, pausing, and revocation are required.
 
-## 2. Componentes propuestos
+## 2. Proposed components
 
 ```mermaid
 flowchart LR
-    subgraph Client[Entorno del holder]
-      UI[Melodya: captura y consentimiento]
+    subgraph Client[Holder environment]
+      UI[Melodya: capture and consent]
       SDK[VoiceProof SDK]
-      Secret[Wallet y secreto del holder]
-      Prover[Proving local o explícitamente confiado]
+      Secret[Wallet and holder secret]
+      Prover[Local or explicitly trusted proving]
       UI --> SDK
       Secret --> SDK
       SDK --> Prover
     end
-    subgraph Private[Servicios privados]
-      API[API: challenge, enrollment y credenciales]
-      ML[Verificador biométrico]
-      DB[(Templates cifrados y sesiones)]
-      Sponsor[Sponsor DUST]
-      Gate[Control de autorización y tareas]
-      Music[Proveedor musical]
+    subgraph Private[Private services]
+      API[API: challenges, enrollment, and credentials]
+      ML[Biometric verifier]
+      DB[(Encrypted templates and sessions)]
+      Sponsor[DUST sponsor]
+      Gate[Authorization checks and jobs]
+      Music[Music provider]
       API --> ML
       ML --> DB
       Gate --> Music
     end
     Chain[Midnight: VoiceAuthorization]
-    UI -->|muestras privadas| API
-    API -->|atestación firmada| SDK
+    UI -->|private samples| API
+    API -->|signed attestation| SDK
     Prover --> SDK
-    SDK -->|transacción ligada al uso| Sponsor
+    SDK -->|transaction bound to the use| Sponsor
     Sponsor --> Chain
-    SDK -->|referencia y requestId| Gate
-    Chain -->|estado confirmado| Gate
+    SDK -->|reference and requestId| Gate
+    Chain -->|confirmed state| Gate
 ```
 
-El primer cliente de referencia puede ser una CLI Node.js controlada por el holder. La experiencia web se incorporará sin convertir al backend en custodio implícito de su secreto. El SDK no implementará ML, un motor criptográfico propio ni una wallet nueva.
+The first reference client can be a Node.js CLI controlled by the holder. A web experience will follow without implicitly making the backend custodian of their secret. The SDK will not implement ML, a custom cryptographic engine, or a new wallet.
 
-El proving remoto introduce confianza adicional: no enviar secretos a un endpoint sólo por ser HTTPS ni prometer que el witness permanece local cuando no sea cierto. El sponsor recibirá una transacción ligada a la acción, no entradas privadas para rehacerla.
+Remote proving introduces additional trust. Do not send secrets to an endpoint just because it uses HTTPS, or promise that witnesses remain local when they do not. The sponsor will receive a transaction bound to the action, not private inputs for reconstructing it.
 
-## 3. Inspiración de midnight-prover-ios
+## 3. Inspiration from midnight-prover-ios
 
-Referencia revisada: [commit 05954e1](https://github.com/sleepydogo/midnight-prover-ios/tree/05954e163087c0c6c25734dbd77c926ddc69f55e).
+Reviewed reference: [commit 05954e1](https://github.com/sleepydogo/midnight-prover-ios/tree/05954e163087c0c6c25734dbd77c926ddc69f55e).
 
-| Patrón observado | Decisión para VoiceProof |
+| Observed pattern | VoiceProof decision |
 | --- | --- |
-| Núcleo separado del acceso a archivos/red mediante proveedores | Separar protocolo de wallet, almacenamiento y transporte |
-| API pública reducida para proving y verificación | Operaciones de autorización con estados y errores explícitos |
-| Descargas contrastadas con digests | Artefactos con versión y manifiesto autenticado; rechazar discrepancias |
-| Límites reales de memoria, progreso y cancelación | Medir nuestros circuitos; cancelar antes de submit no cancela una transacción enviada |
-| Fixtures de referencia y consumidor externo | Separar tests de protocolo, integración y consumo del paquete publicado |
+| Core separated from file/network access through providers | Separate protocol from wallet, storage, and transport |
+| Focused public proving and verification API | Authorization operations with explicit states and errors |
+| Downloads checked against digests | Versioned artifacts with an authenticated manifest; reject mismatches |
+| Documented memory, progress, and cancellation limits | Measure our circuits; cancellation before submission cannot cancel an already submitted transaction |
+| Reference fixtures and an external consumer | Separate protocol tests, integration, and consumption of the published package |
 
-No se copia su implementación Rust/Swift ni se presupone compatibilidad binaria. Un adaptador iOS será una evaluación posterior, sujeta a versiones, coste del circuito y verificación cruzada. El MVP reutilizará el stack oficial de Midnight.
+We are not copying its Rust/Swift implementation or assuming binary compatibility. An iOS adapter will be evaluated later, subject to versions, circuit cost, and cross-verification. The MVP will reuse the official Midnight stack.
 
-## 4. Objetos del protocolo
+## 4. Protocol objects
 
-Estos campos son un modelo lógico; aún no constituyen una serialización interoperable.
+These fields describe a logical model, not yet an interoperable serialization.
 
-| Objeto | Contenido vinculado |
+| Object | Bound content |
 | --- | --- |
-| `VoiceCredential` | Versión, emisor/key ID, holder commitment, template commitment, política/modelo, emisión, expiración y referencia de estado; firma del emisor |
-| `AuthorizationRequest` | Request ID, audiencia, propósito, commitment de la solicitud inmutable, plazo de ejecución y permisos de uso comercial/entrenamiento |
-| `VoiceChallenge` | Nonce aleatorio, credencial, red/contrato, request/consent commitments, política, digest de la frase, emisión y expiración; autenticación del servicio |
-| `VoiceAttestation` | Digest del challenge, credencial/holder, request/consent commitments, política/modelo, decisión positiva, ventana temporal y verifier key ID; firma del verificador |
-| `AuthorizationReceipt` | Versión, red/contrato, referencia a la autorización confirmada, nullifier y request/consent commitments; vínculo privado al resultado |
+| `VoiceCredential` | Version, issuer/key ID, holder commitment, template commitment, policy/model, issuance, expiration, and status reference; issuer signature |
+| `AuthorizationRequest` | Request ID, audience, purpose, immutable request commitment, execution deadline, and commercial-use/training permissions |
+| `VoiceChallenge` | Random nonce, credential, network/contract, request/consent commitments, policy, phrase digest, issuance, and expiration; service authentication |
+| `VoiceAttestation` | Challenge digest, credential/holder, request/consent commitments, policy/model, positive decision, validity window, and verifier key ID; verifier signature |
+| `AuthorizationReceipt` | Version, network/contract, confirmed authorization reference, nullifier, and request/consent commitments; private link to the result |
 
-No incluir audio, embeddings, score ni texto de la frase en el ledger. La atestación tampoco necesita contener el score: esa evidencia permanece bajo retención privada.
+Do not include audio, embeddings, scores, or phrase text on the ledger. The attestation does not need the score either: that evidence remains subject to private retention.
 
-El template commitment representará un identificador aleatorio de template y su versión/modelo con aleatoriedad fresca, no un hash desnudo del embedding. El holder commitment vincula por separado el secreto. El emisor firma la asociación completa y el contrato comprueba los openings necesarios.
+The template commitment will represent a random template identifier and its version/model with fresh randomness, not a bare hash of the embedding. The holder commitment separately binds the secret. The issuer signs the entire association, and the contract checks the required openings.
 
-Antes de implementar hay que fijar encoding canónico, tamaños/rangos, representación del consentimiento, firma soportada en Compact y primitivas de commitment/PRF con separación de dominios. No concatenar strings ni usar `JSON.stringify` como definición criptográfica. Una firma validada sólo en el backend **no satisface** el objetivo del circuito.
+Before implementation, define canonical encoding, field sizes/ranges, consent representation, a signature scheme supported in Compact, and domain-separated commitment/PRF primitives. Do not concatenate strings or use `JSON.stringify` as a cryptographic definition. A signature checked only by the backend **does not satisfy** the circuit's objective.
 
-## 5. Enrollment y emisión
+## 5. Enrollment and issuance
 
-1. Autenticar la cuenta y generar un secreto del holder en su entorno confiado.
-2. Probar control del secreto, ligando el holder commitment a la sesión de enrollment.
-3. Capturar tres frases aleatorias con calidad y anti-spoofing comprobados.
-4. Extraer/agregar embeddings con modelo y política versionados; cifrar el template.
-5. Crear el template commitment y emitir la credencial firmada con el holder commitment.
-6. Registrar el estado inicial mediante una operación autorizada del emisor.
-7. Borrar muestras según el plazo declarado; no retenerlas por defecto para entrenamiento.
+1. Authenticate the account and generate a holder secret in their trusted environment.
+2. Prove control of the secret, binding the holder commitment to the enrollment session.
+3. Capture three random phrases with quality and anti-spoofing checks.
+4. Extract/aggregate embeddings with a versioned model and policy; encrypt the template.
+5. Create the template commitment and issue the signed credential with the holder commitment.
+6. Register its initial status through an authorized issuer operation.
+7. Delete samples according to the declared retention period; do not retain them for training by default.
 
-ECAPA-TDNN y TitaNet son candidatos. Normalización y thresholds se calibrarán con el modelo, idiomas, dispositivos y condiciones elegidos. Versionar cambios para no reinterpretar evidencia antigua con una política nueva.
+ECAPA-TDNN and TitaNet are candidates. Normalization and thresholds will be calibrated for the selected model, languages, devices, and conditions. Version changes so that a new policy cannot silently reinterpret old evidence.
 
-Una cuenta comprometida no debe poder sustituir silenciosamente al holder. Para v0.1 se propone revocar y reemitir mediante un nuevo proceso controlado; definir recuperación antes del piloto.
+A compromised account must not be able to silently replace the holder. For v0.1, the proposed approach is revocation and reissuance through a new controlled process; define recovery before the pilot.
 
-## 6. Autorizar un uso
+## 6. Authorizing a use
 
-1. El backend fija una solicitud inmutable con parámetros de generación, propósito, audiencia y permisos. La app muestra esa misma solicitud.
-2. El servicio emite un nonce criptográficamente aleatorio y un challenge corto ligado a credencial, solicitud y consentimiento.
-3. La persona acepta y graba la frase. El verificador comprueba frase, speaker, anti-spoofing, contexto y expiración.
-4. Sólo si acepta, firma una atestación para ese challenge. No acepta un resultado positivo aportado por el cliente.
-5. El holder construye la prueba con su secreto, credencial, atestación y openings; el SDK verifica los artefactos y prepara la transacción.
-6. El sponsor agrega financiación siguiendo el flujo oficial, sin sustituir la solicitud, el consentimiento ni al holder.
-7. El contrato verifica y registra autorización/nullifier. El SDK distingue preparado, enviado, confirmado y rechazado.
-8. El backend comprueba por su cuenta la autorización confirmada, su contexto y el plazo de ejecución; reserva una tarea única de generación para esa solicitud.
-9. El resultado y su hash se vinculan al receipt en almacenamiento privado. Publicar un commitment adicional será una decisión posterior explícita.
+1. The backend fixes an immutable request with generation parameters, purpose, audience, and permissions. The app displays that same request.
+2. The service issues a cryptographically random nonce and a short-lived challenge bound to credential, request, and consent.
+3. The person consents and records the phrase. The verifier checks phrase, speaker, anti-spoofing, context, and expiration.
+4. Only upon acceptance does it sign an attestation for that challenge. It does not accept a client-supplied positive result.
+5. The holder constructs the proof with their secret, credential, attestation, and openings; the SDK verifies artifacts and prepares the transaction.
+6. The sponsor adds funding using the official flow, without replacing the request, consent, or holder.
+7. The contract checks and records the authorization/nullifier. The SDK distinguishes prepared, submitted, confirmed, and rejected states.
+8. The backend independently checks the confirmed authorization, its context, and the execution deadline, then reserves one generation job for that request.
+9. The result and its hash are linked to the receipt in private storage. Publishing an additional commitment will be an explicit later decision.
 
-La solicitud precede a la canción: no usar `songHash` como entrada conocida antes de generar. El receipt demuestra autorización, no que un proveedor externo haya cumplido efectivamente restricciones de entrenamiento o explotación comercial.
+The request precedes the song: do not use `songHash` as an input known before generation. The receipt establishes authorization, not whether an external provider actually complied with training or commercial-use restrictions.
 
-## 7. Contrato VoiceAuthorization.compact
+## 7. VoiceAuthorization.compact contract
 
-Estado lógico mínimo propuesto:
+Proposed minimum logical state:
 
-- Emisores/verificadores admitidos, claves activas y políticas permitidas.
-- Credenciales activas/revocadas, actualizadas sólo por autoridad competente.
-- Nullifiers utilizados y registros mínimos de la solicitud/consentimiento autorizados.
-- Versión del protocolo y controles de pausa/rotación.
+- Approved issuers/verifiers, active keys, and allowed policies.
+- Active/revoked credentials, updated only by an authorized party.
+- Used nullifiers and minimal records of the authorized request/consent.
+- Protocol version and pause/rotation controls.
 
-El circuito deberá comprobar:
+The circuit must check:
 
-1. Firmas bajo claves admitidas, versiones soportadas y autoridad vigente.
-2. Credencial íntegra, vigente, activa y no revocada en el estado de ejecución.
-3. Conocimiento del secreto que abre el holder commitment. Una clave pública aportada como witness no autentica al holder.
-4. Coincidencia de credencial, atestación, challenge y consentimiento.
-5. Vinculación exacta a red, contrato, audiencia, propósito y solicitud.
-6. Ventanas temporales contra mecanismos de tiempo del ledger, no `Date.now()` del cliente.
-7. Derivación del nullifier correcto y ausencia en el estado.
-8. Registro coherente del consumo y de la autorización aceptada.
+1. Signatures under approved keys, supported versions, and currently valid authority.
+2. An intact, valid, active, non-revoked credential in the execution state.
+3. Knowledge of the secret that opens the holder commitment. A public key supplied as a witness does not authenticate the holder.
+4. Agreement between credential, attestation, challenge, and consent.
+5. Exact binding to network, contract, audience, purpose, and request.
+6. Validity windows against ledger-supported time mechanisms, not the client's `Date.now()`.
+7. Derivation of the correct nullifier and its absence from state.
+8. Consistent recording of consumption and accepted authorization.
 
-Las escrituras deben respetar las fases de transacción de Midnight. Un consumo parcial sin autorización no habilita generación; una autorización sin consumo tampoco. Probar estas propiedades ante fallos de transacción, no inferirlas de un éxito local.
+Writes must respect Midnight's transaction phases. Partial consumption without authorization must not enable generation; authorization without consumption must not either. Test these properties under transaction failures rather than inferring them from local success.
 
-### Replay y consumo fuera de la cadena
+### Replay and off-chain consumption
 
-Conceptualmente: `N = PRF(holderSecret, domain || challengeDigest)`. El digest liga el contexto completo y un nonce del servicio. El contrato recalcula N; no admite un nullifier arbitrario del cliente. La PRF y su encoding quedan como requisito de la especificación ejecutable.
+Conceptually: `N = PRF(holderSecret, domain || challengeDigest)`. The digest binds the complete context and a service-issued nonce. The contract recomputes N; it does not accept an arbitrary client-supplied nullifier. The PRF and its encoding remain requirements for the executable specification.
 
-La unicidad on-chain impide volver a aceptar la autorización. **No impide reenviar un receipt confirmado al backend.** El backend debe reservar atómicamente una tarea con clave única `(network, contract, nullifier)` y solicitud inmutable. Solicitud distinta: rechazar. Misma solicitud: devolver la misma tarea.
+On-chain uniqueness prevents accepting the authorization again. **It does not prevent resubmitting a confirmed receipt to the backend.** The backend must atomically reserve a job with a unique `(network, contract, nullifier)` key and an immutable request. Different request: reject. Same request: return the same job.
 
-La llamada musical usará una clave de idempotencia estable. Si el proveedor no la soporta, no se puede garantizar ejecución exactamente una vez tras un timeout: reconciliar antes de reintentar, sin generar de nuevo a ciegas.
+The music provider call will use a stable idempotency key. If the provider does not support one, exactly-once execution cannot be guaranteed after a timeout: reconcile before retrying, rather than blindly generating again.
 
-### Revocación
+### Revocation
 
-Comprobarla al autorizar on-chain y al admitir la tarea con estado suficientemente reciente. El instante de reserva del backend será el punto de decisión para iniciar el trabajo. Fijar frescura máxima y conducta ante revocación concurrente; ante estado incierto, no iniciar.
+Check revocation when authorizing on-chain and when admitting a job using sufficiently fresh state. The backend's reservation time will be the decision point for starting work. Define maximum staleness and behavior under concurrent revocation; do not start when state is uncertain.
 
-Revocar bloquea nuevos usos; no borra receipts/canciones previos ni garantiza detener un proveedor que ya comenzó. Cambios de modelo, rotación de claves y recuperación requieren reglas de invalidación y reemisión.
+Revocation blocks new uses. It does not delete previous receipts/songs or guarantee stopping a provider that has already started. Model changes, key rotation, and recovery require invalidation and reissuance rules.
 
-## 8. Datos y exposición
+## 8. Data and exposure
 
-| Lugar | Datos permitidos y límite |
+| Location | Permitted data and boundary |
 | --- | --- |
-| Entorno del holder | Secreto y openings; nunca enviados al sponsor |
-| Verificador privado | Audio transitorio, template durante cómputo y scores internos |
-| PostgreSQL privado | Templates cifrados, sesiones, políticas, credenciales y tareas idempotentes |
-| Objetos privados | Audio con expiración/borrado y canciones con control de acceso |
-| Ledger | Claves de autoridades, commitments, revocación, nullifiers y referencias mínimas |
-| Telemetría | Resultados y métricas sin biometría, secretos ni payloads privados |
+| Holder environment | Secret and openings; never sent to the sponsor |
+| Private verifier | Transient audio, template during computation, and internal scores |
+| Private PostgreSQL | Encrypted templates, sessions, policies, credentials, and idempotent jobs |
+| Private object storage | Audio with expiration/deletion and access-controlled songs |
+| Ledger | Authority keys, commitments, revocation, nullifiers, and minimal references |
+| Telemetry | Results and metrics without biometrics, secrets, or private payloads |
 
-Un registro público `credentialCommitment → status` facilita la revocación v0.1, pero el acceso público al identificador puede correlacionar autorizaciones. Es un **diseño seudónimo inicial**, no una prueba anónima de pertenencia. También existe correlación por tiempo, emisor y estructura de transacción.
+A public `credentialCommitment → status` registry simplifies v0.1 revocation, but public access to the identifier can correlate authorizations. This is an **initial pseudonymous design**, not an anonymous membership proof. Timing, issuer, and transaction structure can also enable correlation.
 
-No publicar nombre, email, DID ni template ID. DID no es requisito. Los commitments de solicitud usarán aleatoriedad: un hash de valores predecibles no los oculta por sí solo. Ocultar el consentimiento detallado tampoco oculta la existencia de una autorización.
+Do not publish names, email addresses, DIDs, or template IDs. DID is not a requirement. Request commitments will use randomness: hashing predictable values does not hide them by itself. Hiding detailed consent does not hide the existence of an authorization.
 
-## 9. Superficies y organización previstas
+## 9. Planned interfaces and organization
 
-API privada de referencia, pendiente de implementación:
+Reference private API, not yet implemented:
 
-| Operación | Responsabilidad |
+| Operation | Responsibility |
 | --- | --- |
-| `POST /voice/enroll` | Completar enrollment controlado y emitir credencial |
-| `POST /voice/challenges` | Challenge ligado a una solicitud autenticada |
-| `POST /voice/verify` | Validar muestra/contexto y entregar atestación o rechazo; sin score público |
-| `POST /voice/credentials/:id/revoke` | Revocación autenticada y autorizada |
-| `POST /generations` | Comprobar referencia confirmada/contexto y reservar una tarea |
+| `POST /voice/enroll` | Complete controlled enrollment and issue a credential |
+| `POST /voice/challenges` | Issue a challenge bound to an authenticated request |
+| `POST /voice/verify` | Validate sample/context and return an attestation or rejection; no public score |
+| `POST /voice/credentials/:id/revoke` | Authenticated and authorized revocation |
+| `POST /generations` | Check confirmed reference/context and reserve a job |
 
-`enroll`, `authorize`, `verifyReceipt` y `revoke` son operaciones candidatas del SDK. La API definitiva se fijará con un consumidor real. Verificar una prueba localmente no equivale a confirmar su transacción ni a consumir una autorización.
+`enroll`, `authorize`, `verifyReceipt`, and `revoke` are candidate SDK operations. The final API will be shaped with a real consumer. Local proof verification is not equivalent to confirming its transaction or consuming an authorization.
 
 ```text
 packages/
-  sdk/                     # TypeScript: API pública y coordinación Midnight
-  protocol/                # Tipos, encoding y vectores compartidos
+  sdk/                     # TypeScript: public API and Midnight coordination
+  protocol/                # Shared types, encoding, and test vectors
 contracts/
-  voice-authorization/     # Compact y pruebas del circuito
+  voice-authorization/     # Compact and circuit tests
 services/
-  api/                     # Challenge, emisor, sponsorship y control de generación
-  voice-verifier/          # Python: modelos y evaluación biométrica
+  api/                     # Challenges, issuer, sponsorship, and generation control
+  voice-verifier/          # Python: models and biometric evaluation
 examples/
-  melodya/                 # Consumidor del SDK por su API pública
-bench/                     # Mediciones separadas de ejemplos
+  melodya/                 # Consumer using the SDK's public API
+bench/                     # Measurements separate from examples
 docs/
   architecture.md
 ```
 
-Es una estructura objetivo, no carpetas implementadas. API, issuer y sponsor pueden convivir al comienzo con permisos y claves separados. Añadir `apps/web` cuando exista UX; la librería no dependerá de React.
+This is a target structure, not implemented directories. API, issuer, and sponsor can initially coexist with separate permissions and keys. Add `apps/web` when building the user experience; the library will not depend on React.
 
-## 10. Validación y criterios de aceptación
+## 10. Validation and acceptance criteria
 
-| Caso | Resultado exigido |
+| Case | Required result |
 | --- | --- |
-| Holder y evidencia correctos | Autorización confirmada y una tarea |
-| Credencial copiada sin secreto | Rechazo de la prueba |
-| Firma alterada, clave desconocida o verificador deshabilitado | Rechazo del circuito |
-| Challenge vencido o política/modelo no admitidos | Rechazo |
-| Cambiar audiencia, propósito, permisos o solicitud | Rechazo |
-| Challenge repetido con nullifier inventado | Rechazo |
-| Replay o peticiones concurrentes | Una aceptación on-chain y una tarea de backend |
-| Credencial revocada | Sin nuevas autorizaciones/trabajos según la política |
-| Receipt falso, transacción pendiente/rechazada o estado incierto | Generación bloqueada |
-| Spoofing, reproducción o clonación | Medir éxito por clase de ataque; no prometer protección absoluta |
-| Verificador comprometido | Reconocer el límite y probar deshabilitación, rotación y recuperación |
-| Artefacto corrupto o no admitido | Rechazarlo sin degradar a un modo inseguro |
+| Correct holder and evidence | Confirmed authorization and one job |
+| Copied credential without the secret | Proof rejection |
+| Altered signature, unknown key, or disabled verifier | Circuit rejection |
+| Expired challenge or disallowed policy/model | Rejection |
+| Changed audience, purpose, permissions, or request | Rejection |
+| Reused challenge with an invented nullifier | Rejection |
+| Replay or concurrent requests | One on-chain acceptance and one backend job |
+| Revoked credential | No new authorizations/jobs under the policy |
+| Fake receipt, pending/rejected transaction, or uncertain state | Generation blocked |
+| Spoofing, playback, or cloning | Measure success by attack class; do not promise absolute protection |
+| Compromised verifier | Acknowledge the boundary and test disabling, rotation, and recovery |
+| Corrupt or unapproved artifact | Reject without falling back to an insecure mode |
 
-Pruebas previstas: vectores criptográficos, simulación Compact, proving/Preview, casos negativos, consumo del paquete desde fuera del monorepo y evaluación biométrica separada. Los fixtures sintéticos no son evidencia de precisión de voz.
+Planned tests include cryptographic vectors, Compact simulation, proving/Preview integration, negative cases, package consumption outside the monorepo, and separate biometric evaluation. Synthetic fixtures are not evidence of voice accuracy.
 
-Medir FAR/FRR y éxito de ataques con tamaño de muestra e incertidumbre; latencias biométricas/proving p50/p95, confirmación, memoria, abandono y coste por autorización. Un piloto de 20–50 personas sirve para aprender, no para certificar una FAR muy baja.
+Measure FAR/FRR and attack success with sample sizes and uncertainty; biometric/proving p50/p95 latency, confirmation, memory, abandonment, and cost per authorization. A 20–50-person pilot supports learning, not certification of a very low FAR.
 
-## 11. Decisiones antes de cerrar v0.1
+## 11. Decisions required before closing v0.1
 
-1. Firma/encoding compatibles con Compact, vectores y coste real del circuito.
-2. Custodia/recuperación del holder y ubicación de proving por cliente.
-3. Modelo, anti-spoofing, thresholds y criterios medidos de aceptación.
-4. Temporalidad, revocación concurrente y rotación con pruebas adversariales.
-5. Receipt público, correlación aceptada y tratamiento de permisos.
-6. Retención/borrado, aislamiento y protección de claves de autoridades.
-7. Idempotencia y reconciliación del proveedor musical.
+1. Compact-compatible signatures/encoding, test vectors, and actual circuit cost.
+2. Holder custody/recovery and proving location for each client.
+3. Model, anti-spoofing, thresholds, and measured acceptance criteria.
+4. Time semantics, concurrent revocation, and rotation with adversarial tests.
+5. Public receipt format, accepted correlation, and permission handling.
+6. Retention/deletion, isolation, and authority key protection.
+7. Music provider idempotency and reconciliation.
 
-El primer experimento se limita a credencial + atestación firmada + secreto + challenge + consentimiento + nullifier. Debe demostrar aceptación y rechazo en Preview. DID, VC portable y proving móvil se evaluarán después.
+The first experiment is limited to credential + signed attestation + secret + challenge + consent + nullifier. It must demonstrate both acceptance and rejection on Preview. DID, portable VCs, and mobile proving will be evaluated afterward.
 
-## Referencias
+## References
 
-- [midnight-prover-ios](https://github.com/sleepydogo/midnight-prover-ios): límites del SDK, proveedores, artefactos y validación externa.
-- [Midnight-Skills](https://github.com/Kali-Decoder/Midnight-Skills): Compact, SDK, testing, seguridad y redes; contrastar ejemplos con versiones instaladas.
-- [Compact](https://docs.midnight.network/compact): lenguaje y restricciones del circuito.
-- [Matriz de compatibilidad](https://docs.midnight.network/relnotes/support-matrix): fijar un conjunto compatible al implementar.
-- [DUST sponsorship](https://docs.midnight.network/guides/dust-sponsorship): separar autorización del holder y financiación.
+- [midnight-prover-ios](https://github.com/sleepydogo/midnight-prover-ios): SDK boundaries, providers, artifacts, and external validation.
+- [Midnight-Skills](https://github.com/Kali-Decoder/Midnight-Skills): Compact, SDK, testing, security, and networks; cross-check examples against installed versions.
+- [Compact](https://docs.midnight.network/compact): circuit language and constraints.
+- [Compatibility matrix](https://docs.midnight.network/relnotes/support-matrix): pin a compatible set when implementing.
+- [DUST sponsorship](https://docs.midnight.network/guides/dust-sponsorship): separate holder authorization from funding.
 
-Estas referencias orientan el diseño; no certifican VoiceProof ni implican afiliación con sus autores.
+These references inform the design; they do not certify VoiceProof or imply affiliation with their authors.
